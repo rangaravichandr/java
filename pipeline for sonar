@@ -1,0 +1,59 @@
+pipeline{
+    agent any
+
+////////////////////////////////////////////////////////
+tools{
+'maven' 'maven3'
+'hudson.plugins.sonar.SonarRunnerInstallation' 'sonarqube1'
+
+}
+
+/////////////////////////////////////////////////////////
+    stages{
+
+// //////////////////////GIT checkout stage ///////////////////////
+        stage('GIT CHECKOUT'){
+            steps{
+                git 'https://github.com/Divyabd/Jenkins-Full-Course-on-aws-Linux.git'
+            }
+        }
+        
+//////////////////// Sonarqube intregration stage ///////////////////
+// Link : https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/
+
+        stage("SonarQube intergration"){
+            steps{
+               withSonarQubeEnv(installationName: 'sonarqube1',credentialsId: 'sonarqube1') {
+                sh 'mvn -f Maven/pom.xml clean install package sonar:sonar'
+            }
+
+       }
+         
+    }
+
+// Jfrog artifactory stage 
+
+//          stage("conning to jfrog artifactory"){
+//             steps{
+
+                   
+// rtServer (
+//     id: 'Artifactory-1',
+//     url: 'http://my-artifactory-domain/artifactory',
+//     // If you're using username and password:
+//     username: 'admin',
+//     password: 'Divya@1998',
+//     // If you're using Credentials ID:
+//     //credentialsId: 'ccrreeddeennttiiaall',
+//     // If Jenkins is configured to use an http proxy, you can bypass the proxy when using this Artifactory server:
+//     bypassProxy: true,
+//     // Configure the connection timeout (in seconds).
+//     // The default value (if not configured) is 300 seconds:
+//     timeout: 300
+// )
+//             }
+
+//        }
+
+}
+}
